@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('category_products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_category_id')->constrained('category_products')->OnDelete('restrict');
             $table->string('name');
             $table->text('description');
             $table->timestamps();
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category__products');
+        Schema::dropIfExists('category_products');
     }
 };

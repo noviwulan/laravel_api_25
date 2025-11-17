@@ -1,23 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\CategoryProductController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VendorController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-|Di sini adalah tempat Anda dapat mendaftarkan rute API untuk aplikasi Anda.
-|Rute-rute ini dimuat oleh RouteServiceProvider dan semuanya akan
-|diberi middleware grup "api". Buatlah sesuatu yang hebat!
-|
-*/
-
-
-Route::get('/prducts', [ProductController::class, 'index']);
-Route::post('/prducts', [ProductController::class, 'store']);
-
-Route::get('/Halo', function (){
-    return 'Halo, Laravel';
+Route::prefix('v1')->group(function(){
+    Route::resource('category-product',CategoryProductController::class);
+    Route::resource('product',ProductController::class);
+    Route::resource('vendor',VendorController::class);
 });
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
