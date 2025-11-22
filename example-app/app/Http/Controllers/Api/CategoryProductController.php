@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\CategoryProducts;
+use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 
 class CategoryProductController extends Controller
 {
     //
     public function index(){
-        $category=CategoryProducts::all();
+        $category=CategoryProduct::all();
         return response()->json($category);
     }
 
@@ -20,7 +20,7 @@ class CategoryProductController extends Controller
             'name'=>'required|max:255',
             'description'=>'required|string',
         ]);
-        $category=CategoryProducts::create($validateData);
+        $category=CategoryProduct::create($validateData);
         return response()->json([
             'type'=>'succes',
             'data'=>$category,
@@ -28,7 +28,7 @@ class CategoryProductController extends Controller
     }
 
     public function show($id){
-        $category = CategoryProducts::find($id);
+        $category = CategoryProduct::find($id);
         if (!$category){
             return response()->json([
                 'type'=>'succes',
@@ -40,7 +40,7 @@ class CategoryProductController extends Controller
     }
 
     public function update(Request $request,$id){
-        $category = CategoryProducts::find($id);
+        $category = CategoryProduct::find($id);
         $validateData = $request->validate([
             'name'=>'required|max:255',
             'description'=>'required|string',
@@ -53,7 +53,7 @@ class CategoryProductController extends Controller
     }
 
     public function destroy($id){
-        $category = CategoryProducts::find($id);
+        $category = CategoryProduct::find($id);
         $category -> delete();
         return response()->json([
             'type'=>'succes',
