@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('products_variants', function (Blueprint $table) {
             $table->id();
-            
-            $table->foreignId('product_category_id')->constrained('category_products')->OnDelete('restrict');
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->string('name');      // Tablet, Sirup, Bubuk
+            $table->integer('price');   // harga varian
+            $table->integer('stock');   // stok varian
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('products_variants');
     }
 };

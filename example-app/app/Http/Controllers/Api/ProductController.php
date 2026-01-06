@@ -8,134 +8,72 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-        try{
-            $products = Product::all();
-            return response()->json($products);
-        } catch(\Exception $e){
-            return response()->json([
-                'message'=>$e->getMessage(),
-                'data'=>null
-            ],401);
-        }
+        $products = Product::with(['category', 'variants'])->get();
+
+        return response()->json([
+            'type' => 'success',
+            'data' => $products
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-        
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-        try{
-            $validatedData = $request->validate([
-                'product_category_id'=>'required|exists:category_products,id',
-                'name' => 'required|max:255',
-                'description' => 'required|nullable',
-            ]);
-            $product = Product::create($validatedData);
-            return response()->json([
-                'type'=>'succes',
-                'data'=>$product,
-            ], 201);
+        $validated = $request->validate([
+            'category_product_id' => 'required|exists:category_products,id',
+            'name' => 'required|max:255',
+            'price' => 'required|numeric'
+        ]);
 
-        } catch(\Exception $e){
-            return response()->json([
-                'message'=>$e->getMessage(),
-                'data'=>null
-            ],401);
-        }
+        $product = Product::create($validated);
+
+        return response()->json([
+            'type' => 'success',
+            'data' => $product
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
-        try{
-            $product=Product::findOrFail($id);
+        $product = Product::with(['category', 'variants'])->find($id);
+
+        if (!$product) {
             return response()->json([
-                'type'=>'succes',
-                'data'=>$product
-            ],201);
- 
-        } catch(\Exception $e){
-            return response()->json([
-                'message'=>$e->getMessage(),
-                'data'=>null
-            ],401);
+                'type' => 'error',
+                'message' => 'Product tidak ditemukan'
+            ], 404);
         }
+
+        return response()->json($product);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
-        
+        $product = Product::findOrFail($id);
+
+        $validated = $request->validate([
+            'category_product_id' => 'required|exists:category_products,id',
+            'name' => 'required|max:255',
+            'price' => 'required|numeric'
+        ]);
+
+        $product->update($validated);
+
+        return response()->json([
+            'type' => 'success',
+            'data' => $product
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-        try{
-            $product=Product::findOrFail($id);
-            $validatedData = $request->validate([
-                'product_category_id'=>'required|exists:category_products,id',
-                'name' => 'required|max:255',
-                'description' => 'required|nullable',
-            ]);
-            $product -> update($validatedData);
-            return response()->json([
-                'type'=>'succes',
-                'data'=>$product
-            ], 201);
+        $product = Product::findOrFail($id);
+        $product->delete();
 
-        } catch(\Exception $e){
-            return response()->json([
-                'message'=>$e->getMessage(),
-                'data'=>null
-            ],401);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-        try{
-            $product=Product::findOrFail($id);
-            $product -> delete();
-            return response()->json([
-                'type'=>'succes',
-                'data'=>$product
-            ], 201);
-
-        } catch(\Exception $e){
-            return response()->json([
-                'message'=>$e->getMessage(),
-                'data'=>null
-            ],401);
-        }
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Product berhasil dihapus'
+        ]);
     }
 }

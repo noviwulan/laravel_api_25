@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class CategoryProduct extends Model
 {
-    protected $guarded = ["id"];
+    protected $table = 'category_products';
+    protected $guarded = ['id'];
+    protected $fillable = ['name'];
 
-    public function product_category()
+    public function products()
     {
-        return $this->belongsTo(Product::class);
+    return $this->hasMany(Product::class, 'category_product_id');
     }
 }

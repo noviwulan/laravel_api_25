@@ -6,16 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    //
-    protected $guarded = ["id"];
+    protected $guarded = ['id'];
 
-    public function category_product()
+    public function category()
     {
-        return $this->belongsTo(CategoryProduct::class,'product_category_id');
+        return $this->belongsTo(CategoryProduct::class, 'category_product_id');
     }
-    public function product_variant()
+    public function variants()
     {
-        return $this->hasMany(CategoryProduct::class);
+        return $this->hasMany(ProductVariant::class, 'product_id');
     }
-
 }

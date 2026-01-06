@@ -8,56 +8,64 @@ use Illuminate\Http\Request;
 
 class CategoryProductController extends Controller
 {
-    //
-    public function index(){
-        $category=CategoryProduct::all();
-        return response()->json($category);
+    public function index()
+    {
+        return response()->json(CategoryProduct::all());
     }
 
-    // simpan
-    public function store(Request $request){
-        $validateData = $request->validate([
-            'name'=>'required|max:255',
-            'description'=>'required|string',
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255'
         ]);
-        $category=CategoryProduct::create($validateData);
+
+        $category = CategoryProduct::create($validated);
+
         return response()->json([
-            'type'=>'succes',
-            'data'=>$category,
-        ],201);
+            'type' => 'success',
+            'data' => $category
+        ], 201);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $category = CategoryProduct::find($id);
-        if (!$category){
+
+        if (!$category) {
             return response()->json([
-                'type'=>'succes',
-                'data'=>null,
-                'message'=>'data tidak ditemukan'
-            ],401);
+                'type' => 'error',
+                'message' => 'Category tidak ditemukan'
+            ], 404);
         }
+
         return response()->json($category);
     }
 
-    public function update(Request $request,$id){
-        $category = CategoryProduct::find($id);
-        $validateData = $request->validate([
-            'name'=>'required|max:255',
-            'description'=>'required|string',
+    public function update(Request $request, $id)
+    {
+        $category = CategoryProduct::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|max:255'
         ]);
-        $category -> update($validateData);
+
+        $category->update($validated);
+
         return response()->json([
-            'type'=>'succes',
-            'data'=>$category,
-        ],201);
+            'type' => 'success',
+            'data' => $category
+        ]);
     }
 
-    public function destroy($id){
-        $category = CategoryProduct::find($id);
-        $category -> delete();
+    public function destroy($id)
+    {
+        $category = CategoryProduct::findOrFail($id);
+        $category->delete();
+
         return response()->json([
-            'type'=>'succes',
-            'data'=>$category,
-        ],401);        
+            'type' => 'success',
+            'message' => 'Category berhasil dihapus'
+        ]);
     }
 }
+
