@@ -10,7 +10,11 @@ class CategoryProductController extends Controller
 {
     public function index()
     {
-        return response()->json(CategoryProduct::all());
+        $category = CategoryProduct::all();
+        return response()->json([
+        'type' => 'success',
+        'data' => $category
+    ], 201);
     }
 
     public function store(Request $request)
